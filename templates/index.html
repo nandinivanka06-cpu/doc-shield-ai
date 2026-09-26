@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>DocShield AI</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+
+        /* ==========================================
+           STEP 40 - RISK BANNER
+           ========================================== */
+
+        .risk-classification-banner {
+
+            margin-top: 20px;
+            padding: 22px 25px;
+            border-radius: 14px;
+            border: 2px solid;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            transition: all 0.3s ease;
+
+        }
+
+        .risk-banner-icon {
+
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            flex-shrink: 0;
+
+        }
+
+        .risk-banner-content h2 {
+
+            margin: 0 0 5px 0;
+            font-size: 22px;
+
+        }
+
+        .risk-banner-content p {
+
+            margin: 0;
+            font-size: 14px;
+            line-height: 1.5;
+
+        }
+
+        .risk-low {
+
+            background: #eafaf0;
+            border-color: #28a745;
+            color: #176b2c;
+
+        }
+
+        .risk-low .risk-banner-icon {
+
+            background: #28a745;
+            color: white;
+
+        }
+
+        .risk-medium {
+
+            background: #fff7e6;
+            border-color: #f0a500;
+            color: #8a5a00;
+
+        }
+
+        .risk-medium .risk-banner-icon {
+
+            background: #f0a500;
+            color: white;
+
+        }
+
+        .risk-high {
+
+            background: #fff0f0;
+            border-color: #dc3545;
+            color: #9b1c2a;
+
+        }
+
+        .risk-high .risk-banner-icon {
+
+            background: #dc3545;
+            color: white;
+
+        }
+
+
+        /* ==========================================
+           STEP 42 - HISTORY SEARCH
+           ========================================== */
+
+        .history-search-container {
+
+            margin-top: 20px;
+            margin-bottom: 20px;
+            padding: 20px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+
+        }
+
+        .history-search-title {
+
+            font-size: 17px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #1e293b;
+
+        }
+
+        .history-search-box {
+
+            display: flex;
+            gap: 10px;
+            width: 100%;
+
+        }
+
+        #historySearch {
+
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            outline: none;
+            font-size: 14px;
+            background: white;
+
+        }
+
+        #historySearch:focus {
+
+            border-color: #6366f1;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(99, 102, 241, 0.12);
+
+        }
+
+        #clearHistorySearch {
+
+            padding: 12px 18px;
+            border: none;
+            border-radius: 10px;
+            background: #64748b;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+
+        }
+
+        .history-search-result {
+
+            margin-top: 10px;
+            font-size: 13px;
+            color: #64748b;
+
+        }
+
+
+        /* ==========================================
+           STEP 43 - RISK FILTERS
+           ========================================== */
+
+        .history-filter-container {
+
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+
+        }
+
+        .history-filter-btn {
+
+            padding: 9px 16px;
+            border-radius: 20px;
+            border: 1px solid #cbd5e1;
+            background: white;
+            color: #475569;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+
+        }
+
+        .history-filter-btn.active {
+
+            background: #334155;
+            color: white;
+            border-color: #334155;
+
+        }
+
+        .history-filter-btn.filter-high.active {
+
+            background: #dc3545;
+            border-color: #dc3545;
+            color: white;
+
+        }
+
+        .history-filter-btn.filter-medium.active {
+
+            background: #f0a500;
+            border-color: #f0a500;
+            color: white;
+
+        }
+
+        .history-filter-btn.filter-low.active {
+
+            background: #28a745;
+            border-color: #28a745;
+            color: white;
+
+        }
+
+        .history-filter-label {
+
+            width: 100%;
+            font-size: 13px;
+            font-weight: 600;
+            color: #64748b;
+
+        }
+
+
+        /* ==========================================
+           STEP 45 - HISTORY HEADER
+           ========================================== */
+
+        .history-header-row {
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+
+        }
+
+        .delete-all-history-btn {
+
+            border: none;
+            background: #dc2626;
+            color: white;
+            padding: 11px 17px;
+            border-radius: 9px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+            transition: all 0.2s ease;
+
+        }
+
+        .delete-all-history-btn:hover {
+
+            background: #b91c1c;
+            transform: translateY(-1px);
+
+        }
+
+
+        /* ==========================================
+           MOBILE
+           ========================================== */
+
+        @media (max-width: 600px) {
+
+            .risk-classification-banner {
+
+                padding: 18px;
+
+            }
+
+            .risk-banner-content h2 {
+
+                font-size: 18px;
+
+            }
+
+            .history-search-box {
+
+                flex-direction: column;
+
+            }
+
+            #historySearch,
+            #clearHistorySearch {
+
+                width: 100%;
+                box-sizing: border-box;
+
+            }
+
+            .history-filter-btn {
+
+                flex: 1;
+                min-width: 100px;
+
+            }
+
+            .history-header-row {
+
+                align-items: stretch;
+                flex-direction: column;
+
+            }
+
+            .delete-all-history-btn {
+
+                width: 100%;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="app">
+
+
+    <!-- ======================================
+         SIDEBAR
+         ====================================== -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+
+            🛡️ DocShield AI
+
+        </div>
+
+
+        <nav>
+
+            <button onclick="showDashboard()">
+
+                📊 Dashboard
+
+            </button>
+
+
+            <button onclick="showVerify()">
+
+                🔍 Verify Document
+
+            </button>
+
+
+            <button onclick="showHistory()">
+
+                🗂️ History
+
+            </button>
+
+        </nav>
+
+    </aside>
+
+
+
+    <!-- ======================================
+         MAIN
+         ====================================== -->
+
+    <main class="main">
+
+
+        <!-- HEADER -->
+
+        <header>
+
+            <h1>
+
+                Document Verification System
+
+            </h1>
+
+
+            <p>
+
+                AI-powered document screening and
+                risk analysis
+
+            </p>
+
+        </header>
+
+
+
+        <!-- ==================================
+             DASHBOARD
+             ================================== -->
+
+        <section id="dashboardSection">
+
+
+            <!-- STATISTICS -->
+
+            <div class="stats">
+
+
+                <div class="stat-card">
+
+                    <h3>
+
+                        Total Scans
+
+                    </h3>
+
+
+                    <p id="totalScans">
+
+                        0
+
+                    </p>
+
+                </div>
+
+
+
+                <div class="stat-card">
+
+                    <h3>
+
+                        High Risk
+
+                    </h3>
+
+
+                    <p id="highRisk">
+
+                        0
+
+                    </p>
+
+                </div>
+
+
+
+                <div class="stat-card">
+
+                    <h3>
+
+                        Medium Risk
+
+                    </h3>
+
+
+                    <p id="mediumRisk">
+
+                        0
+
+                    </p>
+
+                </div>
+
+
+
+                <div class="stat-card">
+
+                    <h3>
+
+                        Low Risk
+
+                    </h3>
+
+
+                    <p id="lowRisk">
+
+                        0
+
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- ==================================
+                 RISK STATISTICS CHART
+                 ================================== -->
+
+            <div class="result-card dashboard-chart-card">
+
+                <h2>
+
+                    📊 Verification Risk Statistics
+
+                </h2>
+
+
+                <p class="chart-description">
+
+                    Overview of documents classified
+                    by their risk level.
+
+                </p>
+
+
+                <div class="chart-container">
+
+                    <canvas id="riskChart"></canvas>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- ==================================
+                 DASHBOARD INFORMATION
+                 ================================== -->
+
+            <div class="dashboard-info-card">
+
+                <h2>
+
+                    🛡️ How DocShield AI Works
+
+                </h2>
+
+
+                <p>
+
+                    DocShield AI performs multiple
+                    screening checks on uploaded
+                    documents to identify possible
+                    risk indicators.
+
+                </p>
+
+
+                <div class="dashboard-info-list">
+
+
+                    <div class="dashboard-info-item">
+
+                        🔤 <strong>OCR Analysis</strong>
+
+                        <br>
+
+                        Extracts readable text from
+                        the document.
+
+                    </div>
+
+
+                    <div class="dashboard-info-item">
+
+                        📄 <strong>Structure Analysis</strong>
+
+                        <br>
+
+                        Checks whether expected
+                        document information is present.
+
+                    </div>
+
+
+                    <div class="dashboard-info-item">
+
+                        🖼️ <strong>Image Analysis</strong>
+
+                        <br>
+
+                        Checks image quality and
+                        document resolution.
+
+                    </div>
+
+
+                    <div class="dashboard-info-item">
+
+                        ⚠️ <strong>Risk Assessment</strong>
+
+                        <br>
+
+                        Combines detected indicators
+                        into a risk score.
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+
+            <!-- ==================================
+                 WELCOME CARD
+                 ================================== -->
+
+            <div class="welcome-card">
+
+                <h2>
+
+                    Welcome to DocShield AI 🛡️
+
+                </h2>
+
+
+                <p>
+
+                    Use the <strong>Verify Document</strong>
+                    option from the left sidebar to
+                    upload a document and perform OCR,
+                    structure analysis, text consistency
+                    checks and risk assessment.
+
+                </p>
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- ==================================
+             VERIFY SECTION
+             ================================== -->
+
+        <section id="verifySection"
+
+                 class="hidden">
+
+
+            <div class="verify-card">
+
+                <h2>
+
+                    Verify Document
+
+                </h2>
+
+
+                <p class="subtitle">
+
+                    Upload a document for automated
+                    screening.
+
+                </p>
+
+
+                <div class="upload-box">
+
+                    <input
+
+                        type="file"
+
+                        id="documentInput"
+
+                        accept=".pdf,.jpg,.jpeg,.png"
+
+                    >
+
+
+                    <button
+
+                        class="primary-btn"
+
+                        onclick="verifyDocument()">
+
+                        🔍 Verify Document
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- VERIFICATION COMPLETE -->
+
+            <div id="verificationComplete"
+
+                 class="verification-complete hidden">
+
+                <div class="success-icon">
+
+                    ✓
+
+                </div>
+
+
+                <div>
+
+                    <h2>
+
+                        Document Verification Completed
+
+                    </h2>
+
+
+                    <p>
+
+                        The uploaded document has been
+                        successfully analyzed by DocShield AI.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- VERIFICATION SUMMARY -->
+
+            <div id="verificationSummary"
+
+                 class="result-card verification-summary hidden">
+
+                <h2>
+
+                    📋 Verification Summary
+
+                </h2>
+
+
+                <div class="summary-grid">
+
+
+                    <div class="summary-item">
+
+                        <span>📄 Document</span>
+
+                        <strong id="summaryFilename">
+
+                            -
+
+                        </strong>
+
+                    </div>
+
+
+
+                    <div class="summary-item">
+
+                        <span>🔢 Scan ID</span>
+
+                        <strong id="summaryScanId">
+
+                            -
+
+                        </strong>
+
+                    </div>
+
+
+
+                    <div class="summary-item">
+
+                        <span>📊 Risk Score</span>
+
+                        <strong id="summaryRiskScore">
+
+                            -
+
+                        </strong>
+
+                    </div>
+
+
+
+                    <div class="summary-item">
+
+                        <span>🚦 Classification</span>
+
+                        <strong id="summaryClassification">
+
+                            -
+
+                        </strong>
+
+                    </div>
+
+
+
+                    <div class="summary-item">
+
+                        <span>✅ Verification</span>
+
+                        <strong id="summaryVerification">
+
+                            -
+
+                        </strong>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+
+            <!-- RISK BANNER -->
+
+            <div id="riskClassificationBanner"
+
+                 class="risk-classification-banner hidden">
+
+                <div id="riskBannerIcon"
+
+                     class="risk-banner-icon">
+
+                    ✓
+
+                </div>
+
+
+                <div class="risk-banner-content">
+
+                    <h2 id="riskBannerTitle">
+
+                        Risk Classification
+
+                    </h2>
+
+
+                    <p id="riskBannerMessage">
+
+                        Document risk classification
+                        will appear here.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- RESULT SECTION -->
+
+            <div id="resultSection"
+
+                 class="hidden">
+
+
+                <div class="result-grid">
+
+
+                    <!-- RISK SCORE -->
+
+                    <div class="result-card risk-card">
+
+                        <h2>
+
+                            Risk Score
+
+                        </h2>
+
+
+                        <div class="risk-meter">
+
+                            <div class="risk-circle">
+
+                                <span id="riskScore">
+
+                                    0
+
+                                </span>
+
+
+                                <small>
+
+                                    /100
+
+                                </small>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="risk-progress-container">
+
+                            <div
+
+                                id="riskProgress"
+
+                                class="risk-progress">
+
+                            </div>
+
+                        </div>
+
+
+                        <p class="risk-scale">
+
+                            <span>Low</span>
+
+                            <span>Medium</span>
+
+                            <span>High</span>
+
+                        </p>
+
+
+                        <h2 id="riskLabel">
+
+                            Waiting for verification
+
+                        </h2>
+
+
+                        <p id="status"></p>
+
+                    </div>
+
+
+
+                    <!-- AI ANALYSIS -->
+
+                    <div class="result-card">
+
+                        <h2>
+
+                            🤖 AI Analysis
+
+                        </h2>
+
+
+                        <div class="analysis-item">
+
+                            <span>OCR Analysis</span>
+
+                            <strong id="ocr">Waiting</strong>
+
+                        </div>
+
+
+                        <div class="analysis-item">
+
+                            <span>Document Structure</span>
+
+                            <strong id="structure">Waiting</strong>
+
+                        </div>
+
+
+                        <div class="analysis-item">
+
+                            <span>Image Quality</span>
+
+                            <strong id="image">Waiting</strong>
+
+                        </div>
+
+
+                        <div class="analysis-item">
+
+                            <span>Text Consistency</span>
+
+                            <strong id="text">Waiting</strong>
+
+                        </div>
+
+
+                        <div class="analysis-item">
+
+                            <span>Integrity Check</span>
+
+                            <strong id="tampering">Waiting</strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- RISK ANALYSIS -->
+
+                <div class="result-card">
+
+                    <h2>
+
+                        ⚠️ Risk Analysis
+
+                    </h2>
+
+
+                    <ul id="reasons">
+
+                        <li>
+
+                            No analysis available yet.
+
+                        </li>
+
+                    </ul>
+
+                </div>
+
+
+
+                <!-- EXTRACTED TEXT -->
+
+                <div class="result-card">
+
+                    <h2>
+
+                        📝 Extracted Text
+
+                    </h2>
+
+
+                    <textarea
+
+                        id="extractedText"
+
+                        readonly
+
+                        placeholder="OCR text will appear here..."
+
+                    ></textarea>
+
+                </div>
+
+
+
+                <!-- REPORT -->
+
+                <div class="report-action">
+
+                    <button
+
+                        id="reportButton"
+
+                        class="report-btn"
+
+                        onclick="generateReport()">
+
+                        📄 Download Verification Report
+
+                    </button>
+
+
+                    <p
+
+                        id="reportMessage"
+
+                        style="display:none; margin-top:10px;">
+
+                        Report is being generated...
+
+                    </p>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ==================================
+             HISTORY
+             ================================== -->
+
+        <section id="historySection"
+
+                 class="hidden">
+
+
+            <div class="result-card">
+
+
+                <!-- HISTORY HEADER -->
+
+                <div class="history-header-row">
+
+                    <h2>
+
+                        Verification History
+
+                    </h2>
+
+
+                    <button
+
+                        type="button"
+
+                        class="delete-all-history-btn"
+
+                        onclick="deleteAllHistory()">
+
+                        🗑️ Delete All History
+
+                    </button>
+
+                </div>
+
+
+
+                <!-- SEARCH -->
+
+                <div class="history-search-container">
+
+
+                    <div class="history-search-title">
+
+                        🔍 Search Verification History
+
+                    </div>
+
+
+                    <div class="history-search-box">
+
+                        <input
+
+                            type="text"
+
+                            id="historySearch"
+
+                            placeholder="Search by filename, ID, risk or status..."
+
+                            autocomplete="off"
+
+                        >
+
+
+                        <button
+
+                            type="button"
+
+                            onclick="clearHistorySearch()"
+
+                            id="clearHistorySearch">
+
+                            Clear
+
+                        </button>
+
+                    </div>
+
+
+                    <div
+
+                        id="historySearchResult"
+
+                        class="history-search-result">
+
+                        Showing all verification records
+
+                    </div>
+
+
+                    <!-- RISK FILTERS -->
+
+                    <div class="history-filter-container">
+
+
+                        <div class="history-filter-label">
+
+                            Filter by Risk Level
+
+                        </div>
+
+
+                        <button
+
+                            type="button"
+
+                            class="history-filter-btn active"
+
+                            id="filterAll"
+
+                            onclick="setHistoryFilter('all')">
+
+                            📋 All
+
+                        </button>
+
+
+                        <button
+
+                            type="button"
+
+                            class="history-filter-btn filter-high"
+
+                            id="filterHigh"
+
+                            onclick="setHistoryFilter('high')">
+
+                            🔴 High Risk
+
+                        </button>
+
+
+                        <button
+
+                            type="button"
+
+                            class="history-filter-btn filter-medium"
+
+                            id="filterMedium"
+
+                            onclick="setHistoryFilter('medium')">
+
+                            🟠 Medium Risk
+
+                        </button>
+
+
+                        <button
+
+                            type="button"
+
+                            class="history-filter-btn filter-low"
+
+                            id="filterLow"
+
+                            onclick="setHistoryFilter('low')">
+
+                            🟢 Low Risk
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- HISTORY TABLE -->
+
+                <div class="table-container">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Scan ID</th>
+
+                                <th>Document</th>
+
+                                <th>Risk Score</th>
+
+                                <th>Risk Classification</th>
+
+                                <th>Verification Status</th>
+
+                                <th>Date</th>
+
+                                <th>Action</th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody id="historyTable">
+
+                            <tr>
+
+                                <td colspan="7">
+
+                                    No verification history found.
+
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+</div>
+
+
+
+<!-- ==========================================
+     CHART.JS
+     ========================================== -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+
+<!-- ==========================================
+     DOCSHIELD SCRIPT
+     ========================================== -->
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
+
+</body>
+
+</html>
